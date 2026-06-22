@@ -222,55 +222,43 @@ button {
 }
 
 /* ==========================================================================
-   👤 & 👩 狀態欄
+   👤 & 👩 狀態欄（全新橫向 HUD 遊戲風格）
    ========================================================================== */
 .dual-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    display: flex !important;       /* 強制開啟橫向佈局 */
+    flex-wrap: wrap;                /* 螢幕不夠寬時自動換行 */
+    gap: 12px;                      /* 每個狀態之間的左右間距 */
     margin: 15px 0;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    font-size: 13px;
+    color: #cbd5e1;
+    align-items: center;
 }
 
-.dual-details details, .her-details {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+/* 讓 AI 生成的每一個狀態標籤都變成精緻的小卡片 */
+.dual-details span {
+    display: inline-block;
+    white-space: nowrap;            /* 防止文字內部換行 */
+    padding: 4px 10px;
+    background: rgba(139, 92, 246, 0.15); /* 紫色透明小氣泡 */
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 20px;
+    color: #ddd6fe;
+    font-weight: 500;
+}
+
+/* 以下保持你原本的女主角狀態欄設定 */
+.her-details {
+    margin-top: 10px;
+    border: 1px solid rgba(236, 72, 153, 0.2); 
+    background: rgba(236, 72, 153, 0.02);
     border-radius: 12px;
     overflow: hidden;
 }
 
-.her-details {
-    margin-top: 10px;
-    border-color: rgba(236, 72, 153, 0.2); 
-    background: rgba(236, 72, 153, 0.02);
-}
-
-.dual-details summary, .her-details summary {
-    padding: 10px 14px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #cbd5e1;
-    cursor: pointer;
-    user-select: none;
-    outline: none;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.her-details summary {
-    color: #f472b6;
-    background: rgba(236, 72, 153, 0.05);
-}
-
-.dual-details[open], .her-details[open] {
-    background: rgba(0, 0, 0, 0.2);
-    padding-bottom: 10px;
-}
-
-.dual-details div, .her-details {
-    padding: 8px 14px 0 14px;
-    font-size: 13px;
-    color: #94a3b8;
-    line-height: 1.5;
-}
 
 .thought-line {
     border-left: 2px dashed #f472b6;
