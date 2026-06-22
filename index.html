@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="style.css">
-    <title>自定義小說模擬器</title>
+    <title>自定义小说模拟器</title>
 </head>
 <body>
     <div id="chat-container">
-        <h2>小說模擬器核心終端</h2>
+        <h2>小说模拟器核心终端</h2>
         
         <div id="setup-panel">
-            <input type="password" id="apiKey" placeholder="🔑 輸入你的 Google API Key">
+            <input type="password" id="apiKey" placeholder="🔑 输入你的 Google API Key">
             
             <select id="modelSelect">
                 <option value="gemini-2.5-flash">Gemini 2.5 Flash (最新推荐)</option>
@@ -22,23 +22,31 @@
                 <option value="gemini-1.5-pro">Gemini 3.1 Pro (逻辑极强/速度稍慢)</option>
             </select>
 
-            <div class="setup-title">👤 玩家身份設定</div>
-            <textarea id="setupPlayer" placeholder="扮演什麼角色？外貌衣著？">主人（女性Futa，擁有100%精緻的女性外貌、嗓音與完美傲人身段，唯獨私密部位具備雄性構造）。深色便服，袖口卷到小臂。站在庭院中看著新來的女仆。</textarea>
+            <div class="setup-title" style="color: #00ffcc;">📜 历史时空存档</div>
+            <div id="archive-list" style="margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                </div>
 
-            <div class="setup-title">👩 NPC及私密初始設定</div>
-            <textarea id="setupNpc" placeholder="對方是誰？當前狀態、衣著、私密處狀態？">艾拉，新來的女仆。領口拉到最高的女仆裝。指尖掐進掌心。心理：身體被修好了意味著被使用，在等指令。私密狀態：口腔溫熱、胸部衣物遮蓋、小穴處子（魔法修復）、後穴未使用。</textarea>
+            <div class="setup-title">👤 玩家身份设定</div>
+            <textarea id="setupPlayer" placeholder="扮演什么角色？外貌衣着？">主人（女性Futa，拥有100%精致的女性外貌、嗓音与完美傲人身段，唯独私密部位具备雄性特征）。深色便服，袖口卷到小臂。站在庭院中看着新来的女仆。</textarea>
 
-            <div class="setup-title">🗺️ 故事背景與開場舞台</div>
-            <textarea id="setupPlot" placeholder="故事在哪裡開始？發生了什麼前因？">北境·灰石堡庭院。傍晚的海風帶著鹽和冷松針的氣味。賣家的人剛用治愈魔法覆蓋了艾拉全身，抹去了所有舊傷和初夜勒痕。她又成了處子，站在庭院中央等待主人的命令。</textarea>
+            <div class="setup-title">👩 NPC及私密初始设定</div>
+            <textarea id="setupNpc" placeholder="对方是谁？当前状态、衣着、私密处状态？">艾拉，新来的女仆。领口拉到最高的女仆装。指尖掐进掌心。心理：身体被修好了意味着被使用，在等指令。私密状态：口腔温热、胸部衣物遮盖、小穴处子（魔法修复）、后穴未使用。</textarea>
 
-            <button id="startBtn" onclick="startGame()">✨ 注入因果，創造世界</button>
+            <div class="setup-title">🗺️ 故事背景与开场舞台</div>
+            <textarea id="setupPlot" placeholder="故事在哪里开始？发生了什么前因？">北境·灰石堡庭院。傍晚的海风带着盐和冷松针的气味。卖家的人刚用治愈魔法覆盖了艾拉全身，抹去了所有旧伤和初夜勒痕。她又成了处子，站在庭院中央等待主人的命令。</textarea>
+
+            <button id="startBtn" onclick="startGame()">✨ 注入因果，创造世界</button>
         </div>
 
         <div id="output" style="display: none;"></div>
         
-        <div class="control-box" style="display: none;">
-            <textarea id="userInput" placeholder="輸入 A/B/C/D 或自定義你的下一步行動..."></textarea>
-            <button onclick="sendMessage()">推演劇情</button>
+        <div class="control-box" style="display: none; flex-direction: column; gap: 10px;">
+            <textarea id="userInput" placeholder="输入 A/B/C/D 或自定义你的下一步行动..."></textarea>
+            <div style="display: flex; gap: 10px; width: 100%;">
+                <button onclick="sendMessage()" style="flex: 2;">推演剧情</button>
+                <button onclick="quickSaveGame()" style="flex: 1; background: #22c55e;">💾 存盘</button>
+                <button onclick="returnToMenu()" style="flex: 1; background: #64748b;">🏠 菜单</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
