@@ -66,11 +66,13 @@ NPC 设定与关系逻辑: ${npcSetup}
     chatHistory = [{ role: "user", parts: [{ text: systemInstruction }] }];
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: chatHistory }) 
-        });
+    // 💡 這裡換成了你的 Cloudflare 代理網址
+        const response = await fetch(`https://tiny-silence-5ebd.boomfxx.workers.dev/v1beta/models/${model}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: chatHistory }) 
+    });
+
         
         const textData = await response.text();
         let data;
@@ -126,11 +128,13 @@ async function sendMessage() {
     const loadingId = appendMessage('system', `⏳ 因果推演中...`);
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: chatHistory }) 
-        });
+    // 💡 這裡也換成了你的 Cloudflare 代理網址
+    const response = await fetch(`https://tiny-silence-5ebd.boomfxx.workers.dev/v1beta/models/${model}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: chatHistory }) 
+    });
+
         
         const data = await response.json();
         removeMessage(loadingId);
