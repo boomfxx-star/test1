@@ -55,7 +55,7 @@ NPC 设定与关系逻辑: ${npcSetup}
 3. <div class="weather-wrap"><span class="weather-text">...环境描写...</span></div>
 4. <div class="info-row">...</div>
 5. <div class="story-box">...剧情描写...</div>
-6. <div class="dual-details">...玩家与环境状态...</div>
+6. <div class="dual-details"><span>玩家状态: ...</span> <span>环境状态: ...</span> <span>其他数值: ...</span></div>（强制：里面的每一项状态都必须单独用 <span> 标签包裹，严禁直接堆叠纯文本！）
 7. <details class="her-details" open>...NPC 状态与 <div class="thought-line">心理独白</div>... <details class="private-details"><summary>😉 私密部位</summary><div class="private-tags">...</div></details></details>
 8. <div class="choices">...4个符合剧情的A/B/C/D选项按钮...</div>
 
