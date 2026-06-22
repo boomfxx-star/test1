@@ -409,29 +409,26 @@ button {
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.4); }
 
-/* 1. 调整剧情正文的字号，让它看起来更精致、更像小说 */
-.story-box p {
-    font-size: 14px; /* 从 15px 微调到 14px，视觉上会精致很多 */
-    line-height: 1.6;
-    color: #e2e8f0;
-    margin-bottom: 12px;
-    letter-spacing: 0.3px;
-    text-align: justify;
+/* 1. 只稍微调小正文行高和字体，避免太松散导致下方内容被挤压 */
+.story-box {
+    font-size: 15px; 
+    line-height: 1.5;
+    margin-bottom: 15px;
 }
 
-/* 2. 为玩家状态栏增加顶部间距，彻底解决“撞车”问题 */
+/* 2. 把“玩家状态”变成简单的列表，不再强制分栏，这样就不会撞车了 */
 .dual-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin: 20px 0; /* 增加上下间距，留出呼吸感 */
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05); /* 加一条浅分割线，视觉更整齐 */
+    display: block; /* 取消网格布局，改成堆叠排列 */
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03); /* 给背景一点点质感 */
+    border-radius: 8px;
+    margin: 15px 0; /* 留出合适的呼吸间距 */
 }
 
-/* 3. 稍微调小玩家状态栏里的文字，避免挤压 */
+/* 3. 确保两行字之间有足够的间隔 */
 .dual-details div {
-    padding: 6px 10px;
-    font-size: 12px; /* 字体调小一号 */
-    color: #94a3b8;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #cbd5e1;
 }
+
