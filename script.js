@@ -1,59 +1,134 @@
-html, body {
-    margin: 0; padding: 0; width: 100%; height: 100%;
-    background: #f4f1ea;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", serif;
-    -webkit-tap-highlight-color: transparent;
+let chatHistory = []; 
+
+// ✨ 初始化：注入自定义设定，命令 AI 当场吐出第一场戏的精美卡片
+async function startGame() {
+    const key = document.getElementById('apiKey').value;
+    const model = document.getElementById('modelSelect').value; 
+    
+    const playerSetup = document.getElementById('setupPlayer').value.trim();
+    const npcSetup = document.getElementById('setupNpc').value.trim();
+    const plotSetup = document.getElementById('setupPlot').value.trim();
+
+    if (!key) {
+        alert("请先输入您的 API Key！");
+        return;
+    }
+
+    // 切换界面显示
+    document.getElementById('setup-panel').style.display = 'none';
+    document.getElementById('output').style.display = 'flex';
+    document.querySelector('.control-box').style.display = 'flex';
+
+    const loadingId = appendMessage('system', `🌌 正在根据您的自定义设定创造世界 [${model}]...`);
+
+    // 设定底层规则母指令
+    const systemInstruction = `你是一个顶级文字自助手游GM。现在请根据玩家提供的自定义设定，开启一局全新的高沉浸感模拟游戏。
+[玩家人设]: ${playerSetup}
+[NPC状态及私密设定]: ${npcSetup}
+[初始舞台与剧本背景]: ${plotSetup}
+
+【铁律：你的每一次回复，包括接下来的第一发开场，都必须完整包裹在 <div class="card">...</div> 的 HTML 结构中输出！】
+你必须严格套用以下 HTML 类名与标签结构输出：
+1. <div class="card">：总包裹。
+2. <div class="cake-row">：内含 3 个符合当前气氛的 Emoji。
+3. <div class="weather-wrap"><span class="weather-text">：长句描写当前世界环境、风吹、气味、地貌等高级细节。
+4. <div class="info-row">：内含 3 个 <span> 分别记录短标签：天气、时间、精确地点。
+5. <div class="story-box">：使用多个 <p> 标签精美描写当前的最新剧情进展。
+6. <div class="dual-details">：内含两个 <details>，分别记录 👤玩家状态 和 🌿环境状态。
+7. <details class="her-details" open>：内含 👩NPC状态，核心必须包含一个 <div class="thought-line">💭 描写她此时此刻最真实的心理活动</div>，以及服装、动作。
+8. 在NPC状态内嵌入 <details class="private-details"><summary>😉 私密部位</summary><div class="private-tags">，用 <span> 动态列出各部位状态（如口腔、胸部、小穴、后穴等，根据设定自由增减）。
+9. <div class="choices">：给出 4 个符合当前最新剧情的 A/B/C/D 选项按钮外观（如 <div class="choice-btn">A：xxx</div>）。
+
+现在，请根据玩家提供的自定义设定，直接生成这局游戏的【第一张开场卡片】。不要有任何解释，直接输出 HTML。`;
+
+    chatHistory = [{ role: "user", parts: [{ text: systemInstruction }] }];
+
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: chatHistory }) 
+        });
+        
+        const data = await response.json();
+        removeMessage(loadingId);
+        
+        if (data.error) {
+            appendMessage('system', "❌ 初始化失败: " + data.error.message + "。请刷新网页重试。");
+        } else if (data.candidates && data.candidates[0].content) {
+            let replyText = data.candidates[0].content.parts[0].text;
+            replyText = replyText.replace(/```html/g, '').replace(/
+```/g, '').trim();
+            
+            appendMessage('model', replyText);
+            chatHistory.push({ role: "model", parts: [{ text: replyText }] });
+        }
+    } catch (e) {
+        removeMessage(loadingId);
+        appendMessage('system', "❌ 连接失败，请检查网络后重试。");
+    }
 }
-body { display: flex; justify-content: center; align-items: center; box-sizing: border-box; }
-#chat-container { width: 100%; max-width: 600px; background: white; display: flex; flex-direction: column; box-sizing: border-box; }
 
-/* 💻 电脑端：精致居中框 */
-@media (min-width: 601px) {
-    body { padding: 20px; }
-    #chat-container { height: 90vh; border-radius: 16px; box-shadow: 0 8px 30px rgba(74, 60, 49, 0.1); }
+// 🕹️ 正常游戏回合的剧情推演
+async function sendMessage() {
+    const key = document.getElementById('apiKey').value;
+    const model = document.getElementById('modelSelect').value; 
+    const inputField = document.getElementById('userInput');
+    const input = inputField.value.trim();
+    
+    if (!input) return;
+
+    appendMessage('user', `我的行动：${input}`);
+    inputField.value = '';
+    chatHistory.push({ role: "user", parts: [{ text: input }] });
+
+    const loadingId = appendMessage('system', `⏳ 因果推演中...`);
+
+    try {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: chatHistory }) 
+        });
+        
+        const data = await response.json();
+        removeMessage(loadingId);
+        
+        if (data.error) {
+            appendMessage('system', "❌ API 报错: " + data.error.message);
+        } else if (data.candidates && data.candidates[0].content) {
+            let replyText = data.candidates[0].content.parts[0].text;
+            replyText = replyText.replace(/```html/g, '').replace(/```/g, '').trim();
+            
+            appendMessage('model', replyText);
+            chatHistory.push({ role: "model", parts: [{ text: replyText }] });
+        }
+    } catch (e) {
+        removeMessage(loadingId);
+        appendMessage('system', "❌ 连线失败。");
+    }
 }
-/* 📱 手机端：全屏幕 App */
-@media (max-width: 600px) {
-    body { padding: 0; }
-    #chat-container { height: 100dvh; border-radius: 0; }
+
+function appendMessage(sender, text) {
+    const output = document.getElementById('output');
+    const msgDiv = document.createElement('div');
+    
+    if (sender === 'model') {
+        msgDiv.className = `msg-raw`;
+        msgDiv.innerHTML = text;
+    } else {
+        msgDiv.className = `msg ${sender}-msg`;
+        msgDiv.innerText = text;
+    }
+    
+    const id = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 5);
+    msgDiv.id = id;
+    output.appendChild(msgDiv);
+    output.scrollTop = output.scrollHeight;
+    return id;
 }
 
-h2 { text-align: center; color: #4a3c31; margin: 12px 0 8px 0; font-size: 1.1rem; font-weight: 600; }
-
-/* ⚙️ 设定面板专用 */
-#setup-panel { display: flex; flex-direction: column; padding: 15px; overflow-y: auto; flex: 1; background: #fdfbf7; }
-.setup-title { font-size: 0.8rem; font-weight: bold; color: #8c7662; margin: 10px 0 4px 5px; }
-#setup-panel textarea { height: 60px; font-size: 0.85rem; color: #4a3f35; background: #fff; border: 1px solid #ebd9c5; border-radius: 6px; padding: 8px; resize: none; margin-bottom: 5px; }
-#apiKey, #modelSelect { padding: 10px; border: 1px solid #ebd9c5; border-radius: 8px; font-size: 0.85rem; color: #5c4f43; background: #fff; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
-#startBtn { background: #8c7662; color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; }
-#startBtn:hover { background: #5d5045; }
-
-/* 📜 游戏推进区域 */
-#output { flex: 1; overflow-y: auto; padding: 10px 15px; background: #faf9f6; display: flex; flex-direction: column; }
-
-/* 动态剧本卡片组件 */
-.card { background: #fff; border: 1px solid #e6dfd3; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(74, 60, 49, 0.04); }
-.cake-row { display: flex; gap: 8px; margin-bottom: 10px; }
-.weather-wrap { font-size: 0.8rem; color: #7a6e61; background: #fbfaf7; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; line-height: 1.4; border-left: 2px solid #dcd1c4; }
-.info-row { display: flex; justify-content: space-between; font-size: 0.75rem; color: #8c7d70; margin-bottom: 12px; border-bottom: 1px dashed #e6dfd3; padding-bottom: 8px; }
-.story-box p { font-size: 0.95rem; line-height: 1.65; color: #2b231c; margin: 0 0 12px 0; }
-.dual-details { display: flex; gap: 8px; margin-bottom: 10px; }
-@media (max-width: 400px) { .dual-details { flex-direction: column; } }
-.dual-details details { flex: 1; background: #fdfcfb; padding: 8px; border-radius: 6px; border: 1px solid #ede9e1; }
-.her-details { background: #f7f4ee; padding: 12px; border-radius: 8px; border: 1px solid #e6dfd3; margin-bottom: 12px; }
-summary { font-size: 0.85rem; font-weight: bold; color: #5c4f43; cursor: pointer; outline: none; }
-.thought-line { font-style: italic; color: #7c6854; font-size: 0.85rem; background: #fff; padding: 8px 10px; border-left: 3px solid #bfa083; margin: 8px 0; border-radius: 2px; line-height: 1.4; }
-.private-details { margin-top: 8px; background: #fff; padding: 8px; border-radius: 6px; }
-.private-tags { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; margin-top: 6px; font-size: 0.75rem; }
-.private-tags span { background: #faf8f5; padding: 6px; border-radius: 4px; border: 1px solid #f0ede6; display: block; }
-.choices { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
-.choice-btn { background: #fdfcfb; border: 1px solid #dcd1c4; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; color: #5c4f43; text-align: left; line-height: 1.3; }
-
-.user-msg { background: #e6f3ff; color: #1a3a5c; margin: 5px 0 15px auto; padding: 10px 14px; border-radius: 12px; border-bottom-right-radius: 2px; max-width: 85%; font-size: 0.9rem; word-wrap: break-word; }
-.system-msg { background: #f0ede8; color: #7a6e61; margin: 10px auto; font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; text-align: center; }
-
-/* 底部操作区 */
-.control-box { padding: 10px 15px; background: #fff; border-top: 1px solid #eee; display: flex; flex-direction: column; }
-.control-box textarea { width: 100%; height: 55px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; resize: none; box-sizing: border-box; font-size: 0.95rem; background: #f9f9f9; }
-.control-box textarea:focus { background: #fff; border-color: #bfa083; outline: none; }
-.control-box button { margin-top: 8px; padding: 10px; background: #5d5045; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: bold; }
+function removeMessage(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
