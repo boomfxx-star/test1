@@ -1,6 +1,6 @@
 let chatHistory = []; 
 
-// ✨ 初始化：注入自定义设定，命令 AI 当场吐出第一场戏的精美卡片
+// ✨ 升级版初始化函数：自带安全气囊与拦截侦测
 async function startGame() {
     const key = document.getElementById('apiKey').value;
     const model = document.getElementById('modelSelect').value; 
@@ -14,14 +14,12 @@ async function startGame() {
         return;
     }
 
-    // 切换界面显示
     document.getElementById('setup-panel').style.display = 'none';
     document.getElementById('output').style.display = 'flex';
     document.querySelector('.control-box').style.display = 'flex';
 
     const loadingId = appendMessage('system', `🌌 正在根据您的自定义设定创造世界 [${model}]...`);
 
-    // 设定底层规则母指令
     const systemInstruction = `你是一个顶级文字自助手游GM。现在请根据玩家提供的自定义设定，开启一局全新的高沉浸感模拟游戏。
 [玩家人设]: ${playerSetup}
 [NPC状态及私密设定]: ${npcSetup}
@@ -50,24 +48,55 @@ async function startGame() {
             body: JSON.stringify({ contents: chatHistory }) 
         });
         
-        const data = await response.json();
+        // 🌟 核心改动 1：防止非 JSON 格式导致崩溃
+        const textData = await response.text();
+        let data;
+        try {
+            data = JSON.parse(textData);
+        } catch(ee) {
+            console.error("服务器返回了非JSON数据:", textData);
+            removeMessage(loadingId);
+            appendMessage('system', "❌ 网络节点返回了错误页面，请尝试更换更干净的 VPN 代理节点。");
+            return;
+        }
+
+        // 🌟 核心改动 2：在 F12 控制台打印完整回执，方便随时抓鬼
+        console.log("📊 Google API 完整返回数据:", data);
         removeMessage(loadingId);
         
         if (data.error) {
-            appendMessage('system', "❌ 初始化失败: " + data.error.message + "。请刷新网页重试。");
-        } else if (data.candidates && data.candidates[0].content) {
-            let replyText = data.candidates[0].content.parts[0].text;
-            replyText = replyText.replace(/```html/g, '').replace(/
-```/g, '').trim();
+            appendMessage('system', "❌ 初始化失败: " + data.error.message);
+            return;
+        } 
+
+        if (data.candidates && data.candidates[0]) {
+            const candidate = data.candidates[0];
             
-            appendMessage('model', replyText);
-            chatHistory.push({ role: "model", parts: [{ text: replyText }] });
+            // 🌟 核心改动 3：自动侦测敏感词拦截
+            if (candidate.finishReason === "SAFETY") {
+                appendMessage('system', "⚠️ 镜像世界崩塌：因包含高度敏感词，已被 Google 安全过滤器拦截！请返回并尝试将人设中的隐晦/敏感词汇修改得更隐蔽一些。");
+                return;
+            }
+
+            if (candidate.content && candidate.content.parts && candidate.content.parts[0]) {
+                let replyText = candidate.content.parts[0].text;
+                replyText = replyText.replace(/```html/g, '').replace(/```/g, '').trim();
+                
+                appendMessage('model', replyText);
+                chatHistory.push({ role: "model", parts: [{ text: replyText }] });
+                return;
+            }
         }
+        
+        appendMessage('system', "❌ 无法解析返回的数据，请按 F12 查看 Console 里的具体日志。");
+
     } catch (e) {
+        console.error("运行异常:", e);
         removeMessage(loadingId);
-        appendMessage('system', "❌ 连接失败，请检查网络后重试。");
+        appendMessage('system', "❌ 连接失败，请检查网络或确认是否开启了全局代理。");
     }
 }
+
 
 // 🕹️ 正常游戏回合的剧情推演
 async function sendMessage() {
