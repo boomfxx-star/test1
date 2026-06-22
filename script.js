@@ -67,7 +67,7 @@ NPC 设定与关系逻辑: ${npcSetup}
 
     try {
     // 💡 這裡換成了你的 Cloudflare 代理網址
-        const response = await fetch(`https://tiny-silence-5ebd.boomfxx.workers.dev/v1beta/models/${model}:generateContent?key=${key}`, {
+        const response = await fetch(`/gemini-api/v1beta/models/${model}:generateContent?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: chatHistory }) 
@@ -129,7 +129,7 @@ async function sendMessage() {
 
     try {
     // 💡 這裡也換成了你的 Cloudflare 代理網址
-    const response = await fetch(`https://tiny-silence-5ebd.boomfxx.workers.dev/v1beta/models/${model}:generateContent?key=${key}`, {
+    const response = await fetch(`/gemini-api/v1beta/models/${model}:generateContent?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: chatHistory }) 
