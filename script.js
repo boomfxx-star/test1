@@ -13,7 +13,7 @@ async function sendMessage() {
     
     try {
         // 这里发起请求，注意模型名称你可以随时修改成 'gemini-1.5-pro' 或 'gemini-2.0-flash-exp'
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
