@@ -38,19 +38,19 @@ async function startGame() {
 NPC 设定与关系逻辑: ${npcSetup}
 初始剧本背景: ${plotSetup}
 
-【随机命运系统（核心进化）】：
+【随机命运系统】：
 1. 每次开局时，你必须根据【玩家与 NPC 的关系定义】，随机为玩家生成一个【隐晦的攻略/挑战目标】。
-2. 该目标不需要在界面明写，而是作为你推演剧情的【核心潜规则】。
+2. 该目标必须作为你推演剧情的【核心潜规则】，不要直接写在界面上。
 3. 在第一张开场卡片的【story-box】中，请以旁白或内心独白的形式，巧妙植入这个挑战目标（例如：“在这段相处中，你或许会发现，真正的挑战在于：[目标描述]”）。
-4. 在后续的所有互动中，请根据此目标设置难易度，不要轻易让玩家达成，必须让玩家通过合理的选择来逐步靠近这个目标。
+4. 在后续的所有互动中，请根据此目标设置难易度，不要轻易让玩家达成。
 
-【情感逻辑规则（强制执行）】：
-1. 【关系锚定】：好感度的增长必须基于“符合该关系定位”的交互。严禁好感度无逻辑地快速膨胀。
+【情感逻辑规则】：
+1. 【关系锚定】：好感度的增长必须基于“符合该关系定位”的交互。
 2. 【心理独白暗示】：在每张卡片的 <div class="thought-line"> 中，必须以 NPC 的视角，隐晦地体现出她此时此刻对你的【态度变化】。
-3. 【态度反馈】：始终维持 NPC 的性格防线。即便好感度提升，也要体现出人设中原有的性格特质。
+3. 【态度反馈】：始终维持 NPC 的性格防线，拒绝无脑讨好。
 
 【铁律：你的每一次回复，都必须严格执行 HTML 结构】：
-1. <div class="card 主題類名">...</div>（主题类名需根据当前剧情氛围自选：theme-default, theme-north, theme-cozy, theme-danger）。
+1. <div class="card 主題類名">...</div>（主题类名自选：theme-default, theme-north, theme-cozy, theme-danger）。
 2. <div class="cake-row">...</div>
 3. <div class="weather-wrap"><span class="weather-text">...环境描写...</span></div>
 4. <div class="info-row">...</div>
@@ -60,6 +60,7 @@ NPC 设定与关系逻辑: ${npcSetup}
 8. <div class="choices">...4个符合剧情的A/B/C/D选项按钮...</div>
 
 现在，请直接输出第一张开场卡片，不要有任何解释。`;
+
 
 
     chatHistory = [{ role: "user", parts: [{ text: systemInstruction }] }];
