@@ -1,5 +1,5 @@
 /* ==========================================================================
-   🌌 全局极奢深色底色与字体定义
+   🌌 全局動態色彩環境（隨劇情自動變換）
    ========================================================================== */
 * {
     box-sizing: border-box;
@@ -8,7 +8,8 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
 }
 
-body {
+/* 默認狀態：暗紫魔幻 */
+body, body.theme-default {
     background: radial-gradient(circle at center, #1a1625 0%, #0d0b12 100%);
     color: #e2e8f0;
     display: flex;
@@ -17,6 +18,22 @@ body {
     min-height: 100vh;
     padding: 10px;
     overflow-x: hidden;
+    transition: background 1.5s cubic-bezier(0.25, 1, 0.5, 1); /* 超絲滑變色過渡 */
+}
+
+/* ❄️ 北境/寒冷/戶外主題：深邃凜冽藍黑 */
+body.theme-north {
+    background: radial-gradient(circle at center, #0f1c2e 0%, #050b14 100%);
+}
+
+/* 🕯️ 溫馨/室內/臥室主題：曖昧微醺暗琥珀暖色 */
+body.theme-cozy {
+    background: radial-gradient(circle at center, #2e1a12 0%, #120905 100%);
+}
+
+/* 🩸 危險/衝突/地牢主題：壓抑血絲暗紅黑 */
+body.theme-danger {
+    background: radial-gradient(circle at center, #2b0f0f 0%, #0d0303 100%);
 }
 
 /* 📱 核心主容器 */
@@ -29,14 +46,14 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(138, 92, 246, 0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
 }
 
-/* 🏷️ 终端顶部标题 */
+/* 🏷️ 終端頂部標題 */
 h2 {
     text-align: center;
     font-size: 16px;
@@ -50,7 +67,7 @@ h2 {
 }
 
 /* ==========================================================================
-   ⚙️ 设定菜单面板（第一页美化）
+   ⚙️ 設定菜單面板
    ========================================================================== */
 #setup-panel {
     padding: 25px;
@@ -67,7 +84,6 @@ h2 {
     color: #94a3b8;
 }
 
-/* 输入框、下拉框、大文本框通用酷炫样式 */
 input[type="password"], select, textarea {
     width: 100%;
     background: rgba(30, 27, 46, 0.8);
@@ -92,7 +108,6 @@ textarea {
     height: 90px;
 }
 
-/* 按钮基础通用样式 */
 button {
     cursor: pointer;
     border: none;
@@ -118,7 +133,7 @@ button {
 }
 
 /* ==========================================================================
-   📜 核心互动与故事舞台区（核心美化）
+   📜 核心互動與故事舞台區
    ========================================================================== */
 #output {
     flex: 1;
@@ -131,7 +146,6 @@ button {
     scroll-behavior: smooth;
 }
 
-/* 👑 智能生成的内容大卡片 */
 .msg-raw {
     width: 100%;
     animation: fadeIn 0.4s ease-out both;
@@ -147,7 +161,11 @@ button {
     overflow: hidden;
 }
 
-/* 氛围 Emoji 行 */
+/* 4種卡片邊框微調，呼應全網頁背景 */
+.card.theme-north { border-color: rgba(0, 255, 204, 0.25); }
+.card.theme-cozy { border-color: rgba(251, 146, 60, 0.25); }
+.card.theme-danger { border-color: rgba(239, 68, 68, 0.25); }
+
 .cake-row {
     text-align: center;
     font-size: 20px;
@@ -155,7 +173,6 @@ button {
     letter-spacing: 8px;
 }
 
-/* 电影感高级环境描写 */
 .weather-wrap {
     background: rgba(255, 255, 255, 0.03);
     border-left: 2px solid #00ffcc;
@@ -164,6 +181,10 @@ button {
     margin-bottom: 16px;
 }
 
+/* 不同主題下氣候框的顏色微調 */
+.card.theme-cozy .weather-wrap { border-left-color: #fb923c; }
+.card.theme-danger .weather-wrap { border-left-color: #ef4444; }
+
 .weather-text {
     font-size: 13px;
     color: #00ffcc;
@@ -171,8 +192,9 @@ button {
     line-height: 1.4;
     display: block;
 }
+.card.theme-cozy .weather-text { color: #fdba74; }
+.card.theme-danger .weather-text { color: #fca5a5; }
 
-/* 故事小标签行（地点、时间等） */
 .info-row {
     display: flex;
     flex-wrap: wrap;
@@ -190,7 +212,6 @@ button {
     font-weight: 500;
 }
 
-/* 小说主线剧情段落 */
 .story-box p {
     font-size: 15px;
     line-height: 1.75;
@@ -201,7 +222,7 @@ button {
 }
 
 /* ==========================================================================
-   👤 & 👩 动态折叠状态栏（双状态美化）
+   👤 & 👩 狀態欄
    ========================================================================== */
 .dual-details {
     display: grid;
@@ -210,22 +231,19 @@ button {
     margin: 15px 0;
 }
 
-/* 状态面板基础样式 */
 .dual-details details, .her-details {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     overflow: hidden;
-    transition: all 0.3s ease;
 }
 
 .her-details {
     margin-top: 10px;
-    border-color: rgba(236, 72, 153, 0.2); /* 女仆NPC采用专属粉色边缘 */
+    border-color: rgba(236, 72, 153, 0.2); 
     background: rgba(236, 72, 153, 0.02);
 }
 
-/* 状态栏标题头 */
 .dual-details summary, .her-details summary {
     padding: 10px 14px;
     font-size: 12px;
@@ -242,13 +260,11 @@ button {
     background: rgba(236, 72, 153, 0.05);
 }
 
-/* 折叠打开后的内部衬垫 */
 .dual-details[open], .her-details[open] {
     background: rgba(0, 0, 0, 0.2);
     padding-bottom: 10px;
 }
 
-/* 状态文字排版 */
 .dual-details div, .her-details {
     padding: 8px 14px 0 14px;
     font-size: 13px;
@@ -256,7 +272,6 @@ button {
     line-height: 1.5;
 }
 
-/* 💭 心理活动高亮线 */
 .thought-line {
     border-left: 2px dashed #f472b6;
     padding-left: 10px;
@@ -265,7 +280,6 @@ button {
     font-style: italic;
 }
 
-/* 😉 私密部位二级折叠 */
 .private-details {
     margin-top: 10px;
     border: 1px solid rgba(236, 72, 153, 0.15) !important;
@@ -286,7 +300,6 @@ button {
     padding: 10px !important;
 }
 
-/* 私密状态独立胶囊标签 */
 .private-tags span {
     display: block;
     background: rgba(244, 114, 182, 0.1);
@@ -298,7 +311,7 @@ button {
 }
 
 /* ==========================================================================
-   🎛️ A/B/C/D 剧情分支按键区
+   🎛️ 劇情分支按鍵
    ========================================================================== */
 .choices {
     display: grid;
@@ -315,19 +328,15 @@ button {
     font-size: 13px;
     color: #cbd5e1;
     text-align: left;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none; /* 让生成的壳无法点击，作为纯文本展示或辅助看 */
 }
 
-/* 虽然是AI吐出来的外观，这里给它一点发光科技感 */
 .card .choices .choice-btn {
     border-left: 3px solid #ffb84d;
     background: rgba(255, 184, 77, 0.02);
 }
 
 /* ==========================================================================
-   💬 玩家自主行动气泡 (对话流美化)
+   💬 玩家自主行動氣泡
    ========================================================================== */
 .msg {
     max-width: 85%;
@@ -338,7 +347,6 @@ button {
     animation: fadeIn 0.3s ease-out both;
 }
 
-/* 👤 玩家行动气泡：居右，粉紫渐变爆燃 */
 .user-msg {
     align-self: flex-end;
     background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
@@ -347,7 +355,6 @@ button {
     box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);
 }
 
-/* ⚙️ 系统提示/加载中气泡：居中，幽灵灰 */
 .system-msg {
     align-self: center;
     background: rgba(30, 41, 59, 0.6);
@@ -381,13 +388,7 @@ button {
     color: white;
 }
 
-.control-box button:active {
-    transform: scale(0.97);
-}
-
-/* ==========================================================================
-   📜 历史时空存档小卡片
-   ========================================================================== */
+/* 📜 歷史時空存檔 */
 #archive-list div button {
     border-radius: 10px;
     transition: all 0.2s;
@@ -398,25 +399,12 @@ button {
     color: #00ffcc !important;
 }
 
-/* ==========================================================================
-   💫 动画特效
-   ========================================================================== */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 🎚️ 极简优雅滚动条 */
-::-webkit-scrollbar {
-    width: 6px;
-}
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 92, 246, 0.4);
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.4); }
