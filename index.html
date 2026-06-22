@@ -10,7 +10,7 @@
     <div id="chat-container">
         <h2>小说模拟器核心终端</h2>
         
-        <!-- ⚙️ 核心升级：世界设定面板（开始游戏后会自动隐藏） -->
+        <!-- ⚙️ 设定面板：开始游戏后会自动隐藏 -->
         <div id="setup-panel">
             <input type="password" id="apiKey" placeholder="🔑 输入你的 Google API Key">
             
@@ -33,12 +33,10 @@
             <button id="startBtn" onclick="startGame()">✨ 注入因果，创造世界</button>
         </div>
 
-        <!-- 📜 游戏互动面板（开始游戏后显示） -->
-        <div id="output" style="display: none;">
-            <!-- AI 生成的精美卡片会动态刷新在这里 -->
-        </div>
+        <!-- 📜 游戏互动面板：开始游戏后显示 -->
+        <div id="output" style="display: none;"></div>
         
-        <!-- ⌨️ 微信式底部控制区（开始游戏后显示） -->
+        <!-- ⌨️ 固定底部控制区：开始游戏后显示 -->
         <div class="control-box" style="display: none;">
             <textarea id="userInput" placeholder="输入 A/B/C/D 或自定义你的下一步行动..."></textarea>
             <button onclick="sendMessage()">推演剧情</button>
