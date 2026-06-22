@@ -1,6 +1,6 @@
 let chatHistory = []; 
 
-// ✨ 升级版初始化函数：自带安全气囊与拦截侦测
+// ✨ 初始化：注入自定義設定，命令 AI 當場吐出第一場戲的精美卡片
 async function startGame() {
     const key = document.getElementById('apiKey').value;
     const model = document.getElementById('modelSelect').value; 
@@ -10,7 +10,7 @@ async function startGame() {
     const plotSetup = document.getElementById('setupPlot').value.trim();
 
     if (!key) {
-        alert("请先输入您的 API Key！");
+        alert("請先輸入您的 API Key！");
         return;
     }
 
@@ -18,26 +18,27 @@ async function startGame() {
     document.getElementById('output').style.display = 'flex';
     document.querySelector('.control-box').style.display = 'flex';
 
-    const loadingId = appendMessage('system', `🌌 正在根据您的自定义设定创造世界 [${model}]...`);
+    const loadingId = appendMessage('system', `🌌 正在根據您的自定義設定創造世界 [${model}]...`);
 
-    const systemInstruction = `你是一个顶级文字自助手游GM。现在请根据玩家提供的自定义设定，开启一局全新的高沉浸感模拟游戏。
-[玩家人设]: ${playerSetup}
-[NPC状态及私密设定]: ${npcSetup}
-[初始舞台与剧本背景]: ${plotSetup}
+    // 🌟 核心優化：加粗並明確了「唯獨私密部位」的限制，抹除任何其他雄性特徵
+    const systemInstruction = `你是一個頂級文字自助手遊GM。現在請根據玩家提供的自定義設定，開啟一局全新的高沉浸感模擬遊戲。
+[玩家人設]: ${playerSetup} （【鐵律】：請嚴格記住玩家的生理特徵：其外貌、聲音、骨骼、肌膚、體香與體態皆為完美的女性，【唯獨私密部位具備雄性特徵】。在互動敘事與狀態更新中，嚴禁出現任何其他男性化描寫如鬍鬚、粗糙皮膚、男性聲音或雄性體格，必須保持極致的女性美感與魅力）
+[NPC狀態及私密設定]: ${npcSetup}
+[初始舞台與劇本背景]: ${plotSetup}
 
-【铁律：你的每一次回复，包括接下来的第一发开场，都必须完整包裹在 <div class="card">...</div> 的 HTML 结构中输出！】
-你必须严格套用以下 HTML 类名与标签结构输出：
-1. <div class="card">：总包裹。
-2. <div class="cake-row">：内含 3 个符合当前气氛的 Emoji。
-3. <div class="weather-wrap"><span class="weather-text">：长句描写当前世界环境、风吹、气味、地貌等高级细节。
-4. <div class="info-row">：内含 3 个 <span> 分别记录短标签：天气、时间、精确地点。
-5. <div class="story-box">：使用多个 <p> 标签精美描写当前的最新剧情进展。
-6. <div class="dual-details">：内含两个 <details>，分别记录 👤玩家状态 和 🌿环境状态。
-7. <details class="her-details" open>：内含 👩NPC状态，核心必须包含一个 <div class="thought-line">💭 描写她此时此刻最真实的心理活动</div>，以及服装、动作。
-8. 在NPC状态内嵌入 <details class="private-details"><summary>😉 私密部位</summary><div class="private-tags">，用 <span> 动态列出各部位状态（如口腔、胸部、小穴、后穴等，根据设定自由增减）。
-9. <div class="choices">：给出 4 个符合当前最新剧情的 A/B/C/D 选项按钮外观（如 <div class="choice-btn">A：xxx</div>）。
+【鐵律：你的每一次回復，包括接接下來的第一發開場，都必須完整包裹在 <div class="card">...</div> 的 HTML 結構中輸出！】
+你必須嚴格套用以下 HTML 類名與標籤結構輸出：
+1. <div class="card">：總包裹。
+2. <div class="cake-row">：內含 3 個符合當前氣氛的 Emoji。
+3. <div class="weather-wrap"><span class="weather-text">：長句描寫當前世界環境、風吹、氣味、地貌等高級細節。
+4. <div class="info-row">：內含 3 個 <span> 分別記錄短標籤：天氣、時間、精確地點。
+5. <div class="story-box">：使用多個 <p> 標籤精美描寫當前的最新劇情進展。
+6. <div class="dual-details">：內含兩個 <details>，分別記錄 👤玩家狀態（緊扣玩家100%女性化外觀但私密特殊的特徵） 和 🌿環境狀態。
+7. <details class="her-details" open>：內含 👩NPC狀態，核心必須包含一個 <div class="thought-line">💭 描寫她此時此刻最真實的心理活動</div>，以及服裝、動作。
+8. 在NPC狀態內嵌入 <details class="private-details"><summary>😉 私密部位</summary><div class="private-tags">，用 <span> 動態列出各部位狀態（如口腔、胸部、小穴、後穴等，根據設定自由增減）。
+9. <div class="choices">：給出 4 個符合當前最新劇情的 A/B/C/D 選項按鈕外觀（如 <div class="choice-btn">A：xxx</div>）。
 
-现在，请根据玩家提供的自定义设定，直接生成这局游戏的【第一张开场卡片】。不要有任何解释，直接输出 HTML。`;
+現在，請根據玩家提供的自定義設定，直接生成這局遊戲的【第一張開場卡片】。不要有任何解釋，直接輸出 HTML。`;
 
     chatHistory = [{ role: "user", parts: [{ text: systemInstruction }] }];
 
@@ -48,33 +49,30 @@ async function startGame() {
             body: JSON.stringify({ contents: chatHistory }) 
         });
         
-        // 🌟 核心改动 1：防止非 JSON 格式导致崩溃
         const textData = await response.text();
         let data;
         try {
             data = JSON.parse(textData);
         } catch(ee) {
-            console.error("服务器返回了非JSON数据:", textData);
+            console.error("服務器返回了非JSON數據:", textData);
             removeMessage(loadingId);
-            appendMessage('system', "❌ 网络节点返回了错误页面，请尝试更换更干净的 VPN 代理节点。");
+            appendMessage('system', "❌ 網絡節點返回了錯誤頁面，請嘗試更換更乾淨的 VPN 代理節點。");
             return;
         }
 
-        // 🌟 核心改动 2：在 F12 控制台打印完整回执，方便随时抓鬼
-        console.log("📊 Google API 完整返回数据:", data);
+        console.log("📊 Google API 完整返回數據:", data);
         removeMessage(loadingId);
         
         if (data.error) {
-            appendMessage('system', "❌ 初始化失败: " + data.error.message);
+            appendMessage('system', "❌ 初始化失敗: " + data.error.message);
             return;
         } 
 
         if (data.candidates && data.candidates[0]) {
             const candidate = data.candidates[0];
             
-            // 🌟 核心改动 3：自动侦测敏感词拦截
             if (candidate.finishReason === "SAFETY") {
-                appendMessage('system', "⚠️ 镜像世界崩塌：因包含高度敏感词，已被 Google 安全过滤器拦截！请返回并尝试将人设中的隐晦/敏感词汇修改得更隐蔽一些。");
+                appendMessage('system', "⚠️ 鏡像世界崩塌：因包含高度敏感詞，已被 Google 安全過濾器攔截！請返回並嘗試將人設中的隱晦/敏感詞匯修改得更隱蔽一些。");
                 return;
             }
 
@@ -88,17 +86,16 @@ async function startGame() {
             }
         }
         
-        appendMessage('system', "❌ 无法解析返回的数据，请按 F12 查看 Console 里的具体日志。");
+        appendMessage('system', "❌ 無法解析返回的數據，請按 F12 查看 Console 裡的具體日誌。");
 
     } catch (e) {
-        console.error("运行异常:", e);
+        console.error("運行異常:", e);
         removeMessage(loadingId);
-        appendMessage('system', "❌ 连接失败，请检查网络或确认是否开启了全局代理。");
+        appendMessage('system', "❌ 連接失敗，請檢查網絡或確認是否開啟了全局代理。");
     }
 }
 
-
-// 🕹️ 正常游戏回合的剧情推演
+// 🕹️ 正常遊戲回合的劇情推演
 async function sendMessage() {
     const key = document.getElementById('apiKey').value;
     const model = document.getElementById('modelSelect').value; 
@@ -107,7 +104,7 @@ async function sendMessage() {
     
     if (!input) return;
 
-    appendMessage('user', `我的行动：${input}`);
+    appendMessage('user', `我的行動：${input}`);
     inputField.value = '';
     chatHistory.push({ role: "user", parts: [{ text: input }] });
 
@@ -124,7 +121,7 @@ async function sendMessage() {
         removeMessage(loadingId);
         
         if (data.error) {
-            appendMessage('system', "❌ API 报错: " + data.error.message);
+            appendMessage('system', "❌ API 報錯: " + data.error.message);
         } else if (data.candidates && data.candidates[0].content) {
             let replyText = data.candidates[0].content.parts[0].text;
             replyText = replyText.replace(/```html/g, '').replace(/```/g, '').trim();
@@ -134,7 +131,7 @@ async function sendMessage() {
         }
     } catch (e) {
         removeMessage(loadingId);
-        appendMessage('system', "❌ 连线失败。");
+        appendMessage('system', "❌ 連線失敗。");
     }
 }
 
