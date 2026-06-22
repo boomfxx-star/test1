@@ -408,3 +408,30 @@ button {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.4); }
+
+/* 1. 调整剧情正文的字号，让它看起来更精致、更像小说 */
+.story-box p {
+    font-size: 14px; /* 从 15px 微调到 14px，视觉上会精致很多 */
+    line-height: 1.6;
+    color: #e2e8f0;
+    margin-bottom: 12px;
+    letter-spacing: 0.3px;
+    text-align: justify;
+}
+
+/* 2. 为玩家状态栏增加顶部间距，彻底解决“撞车”问题 */
+.dual-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0; /* 增加上下间距，留出呼吸感 */
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* 加一条浅分割线，视觉更整齐 */
+}
+
+/* 3. 稍微调小玩家状态栏里的文字，避免挤压 */
+.dual-details div {
+    padding: 6px 10px;
+    font-size: 12px; /* 字体调小一号 */
+    color: #94a3b8;
+}
