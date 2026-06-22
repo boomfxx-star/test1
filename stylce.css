@@ -7,10 +7,12 @@ html, body {
 body { display: flex; justify-content: center; align-items: center; box-sizing: border-box; }
 #chat-container { width: 100%; max-width: 600px; background: white; display: flex; flex-direction: column; box-sizing: border-box; }
 
+/* 💻 电脑端：精致居中框 */
 @media (min-width: 601px) {
     body { padding: 20px; }
     #chat-container { height: 90vh; border-radius: 16px; box-shadow: 0 8px 30px rgba(74, 60, 49, 0.1); }
 }
+/* 📱 手机端：全屏幕 App */
 @media (max-width: 600px) {
     body { padding: 0; }
     #chat-container { height: 100dvh; border-radius: 0; }
@@ -18,28 +20,18 @@ body { display: flex; justify-content: center; align-items: center; box-sizing: 
 
 h2 { text-align: center; color: #4a3c31; margin: 12px 0 8px 0; font-size: 1.1rem; font-weight: 600; }
 
-/* ⚙️ 设定面板专属样式 */
-#setup-panel {
-    display: flex; flex-direction: column; padding: 15px; overflow-y: auto; flex: 1; background: #fdfbf7;
-}
-.setup-title {
-    font-size: 0.8rem; font-weight: bold; color: #8c7662; margin: 10px 0 4px 5px; text-transform: uppercase;
-}
-#setup-panel textarea {
-    height: 60px; font-size: 0.85rem; color: #4a3f35; background: #fff; border: 1px solid #ebd9c5; border-radius: 6px; padding: 8px; resize: none; margin-bottom: 5px;
-}
-#apiKey, #modelSelect {
-    padding: 10px; border: 1px solid #ebd9c5; border-radius: 8px; font-size: 0.85rem; color: #5c4f43; background: #fff; margin-bottom: 10px; width: 100%; box-sizing: border-box;
-}
-#startBtn {
-    background: #8c7662; color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer;
-}
+/* ⚙️ 设定面板专用 */
+#setup-panel { display: flex; flex-direction: column; padding: 15px; overflow-y: auto; flex: 1; background: #fdfbf7; }
+.setup-title { font-size: 0.8rem; font-weight: bold; color: #8c7662; margin: 10px 0 4px 5px; }
+#setup-panel textarea { height: 60px; font-size: 0.85rem; color: #4a3f35; background: #fff; border: 1px solid #ebd9c5; border-radius: 6px; padding: 8px; resize: none; margin-bottom: 5px; }
+#apiKey, #modelSelect { padding: 10px; border: 1px solid #ebd9c5; border-radius: 8px; font-size: 0.85rem; color: #5c4f43; background: #fff; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
+#startBtn { background: #8c7662; color: white; border: none; padding: 12px; margin-top: 15px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; }
 #startBtn:hover { background: #5d5045; }
 
-/* 📜 游戏阶段样式 */
+/* 📜 游戏推进区域 */
 #output { flex: 1; overflow-y: auto; padding: 10px 15px; background: #faf9f6; display: flex; flex-direction: column; }
 
-/* 动态生成的卡片及组件 */
+/* 动态剧本卡片组件 */
 .card { background: #fff; border: 1px solid #e6dfd3; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(74, 60, 49, 0.04); }
 .cake-row { display: flex; gap: 8px; margin-bottom: 10px; }
 .weather-wrap { font-size: 0.8rem; color: #7a6e61; background: #fbfaf7; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; line-height: 1.4; border-left: 2px solid #dcd1c4; }
@@ -58,8 +50,9 @@ summary { font-size: 0.85rem; font-weight: bold; color: #5c4f43; cursor: pointer
 .choice-btn { background: #fdfcfb; border: 1px solid #dcd1c4; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; color: #5c4f43; text-align: left; line-height: 1.3; }
 
 .user-msg { background: #e6f3ff; color: #1a3a5c; margin: 5px 0 15px auto; padding: 10px 14px; border-radius: 12px; border-bottom-right-radius: 2px; max-width: 85%; font-size: 0.9rem; word-wrap: break-word; }
-.system-msg { background: #f0ede8; color: #7a6e61; margin: 10px auto; font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; }
+.system-msg { background: #f0ede8; color: #7a6e61; margin: 10px auto; font-size: 0.75rem; padding: 4px 12px; border-radius: 20px; text-align: center; }
 
+/* 底部操作区 */
 .control-box { padding: 10px 15px; background: #fff; border-top: 1px solid #eee; display: flex; flex-direction: column; }
 .control-box textarea { width: 100%; height: 55px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; resize: none; box-sizing: border-box; font-size: 0.95rem; background: #f9f9f9; }
 .control-box textarea:focus { background: #fff; border-color: #bfa083; outline: none; }
